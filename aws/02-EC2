@@ -1,0 +1,427 @@
+What is EC2?
+EC2 (Elastic Compute Cloud) is a virtual machine service provided by AWS.
+Think:
+Plain Text
+Physical Server
+↓
+Virtual Machine
+↓
+AWS EC2
+Applications run on EC2.
+Examples:
+Java Applications
+Python Applications
+Jenkins
+Docker Containers
+Kubernetes Worker Nodes
+Monitoring Tools
+Why EC2?
+Before Cloud:
+Plain Text
+Buy Servers
+Rack
+Power
+Network
+Maintenance
+Takes weeks.
+With AWS:
+Plain Text
+Launch EC2
+Within minutes.
+Benefits:
+✅ Fast Provisioning
+✅ Auto Scaling
+✅ Pay As You Go
+✅ High Availability
+✅ Easy Monitoring
+EC2 Components
+1. AMI
+AMI = Amazon Machine Image
+OS Template.
+Examples:
+Plain Text
+Amazon Linux
+Ubuntu
+Windows
+RedHat
+When launching EC2:
+Plain Text
+AMI
+↓
+EC2 Instance
+2. Instance Type
+Defines:
+Plain Text
+CPU
+RAM
+Network
+Examples:
+Plain Text
+t2.micro
+t3.micro
+t3.medium
+m5.large
+Interview:
+Difference Between t and m Families
+Plain Text
+t-series
+Burstable workload
+ 
+m-series
+General purpose workload
+3. Security Group
+Acts as:
+Plain Text
+Virtual Firewall
+Controls:
+Plain Text
+Inbound
+Outbound
+Example:
+Plain Text
+SSH 22
+HTTP 80
+HTTPS 443
+4. Key Pair
+Used for:
+Plain Text
+SSH Authentication
+Connect:
+Shell
+ssh -i devops.pem ec2-user@IP
+5. EBS
+Elastic Block Storage
+Attached storage.
+Think:
+Plain Text
+EC2 Hard Disk
+Example:
+Plain Text
+8 GB
+20 GB
+100 GB
+Persist even if server restarts.
+EC2 Lifecycle
+Plain Text
+Launch
+↓
+Running
+↓
+Stop
+↓
+Start
+↓
+Terminate
+Production Architecture
+Bad:
+Plain Text
+User
+↓
+EC2
+Single Point of Failure.
+Good:
+Plain Text
+User
+↓
+ALB
+↓
+EC2
+↓
+EC2
+Multiple instances.
+Best:
+Plain Text
+Route53
+↓
+ALB
+↓
+Auto Scaling Group
+↓
+EC2 Instances
+Used in production.
+Real-Time Responsibilities
+As DevOps Engineer:
+Server Creation
+Plain Text
+Launch EC2
+Attach Security Group
+Configure Storage
+Application Deployment
+Plain Text
+Install Java
+ 
+Install Docker
+ 
+Deploy Application
+Troubleshooting
+Plain Text
+CPU Issues
+ 
+Memory Issues
+ 
+Disk Issues
+ 
+Network Issues
+Monitoring
+Plain Text
+CloudWatch
+ 
+Prometheus
+ 
+Grafana
+Daily Commands
+CPU
+Shell
+top
+Memory
+Shell
+free -m
+Disk
+Shell
+df -h
+Processes
+Shell
+ps -ef
+Ports
+Shell
+netstat -tulpn
+Logs
+Shell
+journalctl -xe
+Common Production Issues
+Issue 1
+Application Not Accessible
+Flow:
+Plain Text
+Route53
+↓
+ALB
+↓
+EC2
+↓
+Application
+Check:
+Plain Text
+DNS Resolution
+ 
+ALB Health
+ 
+Security Group
+ 
+Application Status
+Issue 2
+Cannot SSH
+Check:
+Plain Text
+Security Group Port 22
+ 
+Correct Key Pair
+ 
+Public IP
+ 
+Route Table
+Issue 3
+High CPU
+Check:
+Shell
+top
+Find process.
+Example:
+Plain Text
+Java Process
+ 
+Application Loop
+ 
+High Traffic
+Issue 4
+Memory Full
+Check:
+Shell
+free -m
+Check:
+Shell
+ps -aux --sort=-%mem
+Issue 5
+Disk Full
+Check:
+Shell
+df -h
+Find directory:
+Shell
+du -sh /*
+EC2 Networking
+EC2 resides inside:
+Plain Text
+VPC
+↓
+Subnet
+↓
+Security Group
+↓
+EC2
+Without VPC:
+Plain Text
+No EC2
+Public vs Private EC2
+Public EC2
+Has:
+Plain Text
+Public IP
+Accessible from Internet.
+Examples:
+Plain Text
+Web Servers
+ALB
+Bastion Host
+Private EC2
+No Public IP.
+Examples:
+Plain Text
+Database Layer
+ 
+Backend Servers
+ 
+Kubernetes Worker Nodes
+EC2 and IAM Role
+Very Important.
+Interview Favorite.
+Bad Practice:
+Plain Text
+Access Key
+Secret Key
+Stored on Server
+Best Practice:
+Plain Text
+EC2
+↓
+IAM Role
+↓
+S3 Access
+No secrets stored.
+Auto Scaling
+Problem:
+Plain Text
+100 Users
+Server OK.
+Later:
+Plain Text
+10,000 Users
+Server overloaded.
+Solution:
+Plain Text
+Auto Scaling Group
+Automatically adds:
+Plain Text
+EC2
+EC2
+EC2
+based on traffic.
+EC2 Backup
+Methods:
+Snapshots
+Plain Text
+EBS Snapshot
+Backup of volume.
+AMI
+Create image of complete server.
+Used for DR.
+EC2 Monitoring
+CloudWatch Metrics:
+Plain Text
+CPU Utilization
+ 
+Network In
+ 
+Network Out
+ 
+Disk Metrics
+ 
+Memory Metrics
+Create alarms.
+Example:
+Plain Text
+CPU > 80%
+Send Alert.
+EC2 Terraform
+provider.tf
+Terraform
+provider "aws" {
+region = "ap-south-1"
+}
+main.tf
+Terraform
+resource "aws_instance" "web" {
+ 
+ami = "ami-xxxxxxxx"
+ 
+instance_type = "t2.micro"
+ 
+tags = {
+Name = "terraform-server"
+}
+}
+Commands:
+Shell
+terraform init
+terraform validate
+terraform plan
+terraform apply
+terraform destroy
+Interview Questions
+What is EC2?
+Answer:
+EC2 is a scalable virtual machine service that allows users to run applications on AWS infrastructure.
+What is AMI?
+Answer:
+AMI is a template containing operating system and software configuration used to launch EC2 instances.
+What is EBS?
+Answer:
+EBS is persistent block storage attached to EC2 instances.
+Difference Between Stop and Terminate?
+Stop
+Plain Text
+Server stops
+EBS remains
+Can start again
+Terminate
+Plain Text
+Server deleted permanently
+What is Security Group?
+Answer:
+Security Group acts as a stateful virtual firewall controlling inbound and outbound traffic.
+Why IAM Role?
+Answer:
+IAM Roles provide temporary AWS permissions to EC2 instances without storing access keys.
+How Do You Troubleshoot Website Down?
+Answer:
+Verify Route53.
+Verify ALB.
+Verify Target Group.
+Verify EC2 health.
+Verify Security Group.
+Verify application status.
+Check logs.
+One-Line Revision
+Plain Text
+EC2 = Virtual Machine
+ 
+AMI = OS Template
+ 
+Instance Type = CPU + RAM
+ 
+Security Group = Firewall
+ 
+EBS = Storage
+ 
+Key Pair = SSH Access
+ 
+IAM Role = Secure AWS Access
+ 
+CloudWatch = Monitoring
+ 
+Auto Scaling = Automatic Server Scaling
+ 
+Terraform = Infrastructure Automation
+For your learning path:
+✅ IAM completed
+✅ EC2 completed
